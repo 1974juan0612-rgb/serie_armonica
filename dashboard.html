@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DASHBOARD — Datos Públicos CERN / HepData</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #09090f; --panel: #0e0e18; --border: #1e1e38;
+    --accent1: #ff4d00; --accent2: #7c3aff; --accent3: #00e5a0;
+    --text: #c8c8e0; --dim: #4a4a70;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; min-height:100vh; }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    pointer-events:none; z-index:9999;
+  }
+  header {
+    padding:18px 24px 12px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:16px;
+  }
+  .dot {
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent1); box-shadow:0 0 12px var(--accent1);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  header h1 {
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent1);
+  }
+  .tag { margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px;color:var(--dim);letter-spacing:2px; }
+  a.back { color:var(--dim); text-decoration:none; font-size:12px; margin-right:8px; }
+  a.back:hover { color:var(--accent3); }
+
+  .controls-bar {
+    padding:16px 24px; display:flex; gap:12px; align-items:center;
+    border-bottom:1px solid var(--border); flex-wrap:wrap;
+  }
+  .controls-bar button {
+    background:var(--panel); border:1px solid var(--border);
+    color:var(--text); padding:8px 16px; border-radius:4px;
+    font-family:'Share Tech Mono',monospace; font-size:10px;
+    cursor:pointer; letter-spacing:1px; transition:all 0.2s;
+  }
+  .controls-bar button:hover { border-color:var(--accent3); color:var(--accent3); }
+  .controls-bar button:disabled { opacity:0.4; cursor:not-allowed; }
+  .badge {
+    font-family:'Share Tech Mono',monospace; font-size:10px;
+    padding:4px 10px; border-radius:3px; border:1px solid var(--border);
+  }
+  .badge.ok { border-color:var(--accent3); color:var(--accent3); }
+  .badge.err { border-color:var(--accent1); color:var(--accent1); }
+  .badge.warn { border-color:#ffcc00; color:#ffcc00; }
+
+  .grid {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:16px; padding:16px 24px; max-width:1400px;
+  }
+  .full { grid-column:1/-1; }
+  .card {
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:6px; padding:16px;
+  }
+  .card-title {
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  canvas { width:100%!important; }
+
+  .stats-row {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:12px; padding:0 24px 16px;
+  }
+  .stat {
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:4px; padding:12px 14px;
+  }
+  .stat-label { font-size:10px; color:var(--dim); letter-spacing:1px; }
+  .stat-value {
+    font-family:'Share Tech Mono',monospace;
+    font-size:20px; font-weight:700; color:var(--accent3);
+  }
+  .stat-value.warn { color:var(--accent1); }
+  .stat-sub { font-size:10px; color:var(--dim); }
+
+  .data-table-wrap {
+    overflow-x:auto; font-size:12px;
+  }
+  .data-table-wrap table { width:100%; border-collapse:collapse; }
+  .data-table-wrap th {
+    font-family:'Share Tech Mono',monospace; font-size:9px;
+    color:var(--dim); letter-spacing:1px; text-transform:uppercase;
+    text-align:left; padding:8px 10px; border-bottom:1px solid var(--border);
+  }
+  .data-table-wrap td {
+    padding:6px 10px; border-bottom:1px solid rgba(30,30,56,0.5);
+    font-family:'Share Tech Mono',monospace; font-size:11px;
+  }
+  .data-table-wrap tr:hover td { background:rgba(0,229,160,0.03); }
+
+  .log {
+    font-family:'Share Tech Mono',monospace; font-size:10px;
+    color:var(--dim); padding:4px 0;
+  }
+  .log .ok { color:var(--accent3); }
+  .log .err { color:var(--accent1); }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="index.html">← Portal</a>
+  <div class="dot"></div>
+  <h1>Dashboard de Datos Públicos — HepData / CERN</h1>
+  <span class="tag">LIVE</span>
+</header>
+
+<div class="controls-bar">
+  <button id="btn-fetch" onclick="fetchData()">⟳ Cargar desde CERN</button>
+  <button id="btn-export" onclick="exportCSV()">↓ Exportar CSV</button>
+  <span class="badge" id="conn-badge">● Conectando...</span>
+  <span style="margin-left:auto;font-size:11px;color:var(--dim);">
+    Record: <code style="color:var(--accent3)">ins1358249</code>
+  </span>
+</div>
+
+<div id="log-area" class="log" style="padding:0 24px 8px;">Inicializando...</div>
+
+<div class="stats-row" id="stats-row">
+  <div class="stat"><div class="stat-label">Puntos Q²</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-label">Q² Mín (GeV²)</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-label">Q² Máx (GeV²)</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-label">Promedio</div><div class="stat-value">—</div></div>
+</div>
+
+<div class="grid">
+  <div class="card full">
+    <div class="card-title">Presiones Q² — Distribución</div>
+    <canvas id="chart-main" height="220"></canvas>
+  </div>
+  <div class="card">
+    <div class="card-title">Datos Crudos — Tabla</div>
+    <div class="data-table-wrap" id="table-wrap">
+      <table><thead><tr><th>#</th><th>Q² (GeV²)</th><th>Log₁₀(Q²)</th></tr></thead>
+      <tbody id="table-body"></tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Correlación Cruzada (Simulación vs Datos)</div>
+    <canvas id="chart-cross" height="220"></canvas>
+  </div>
+</div>
+
+<script>
+let dataset = [];
+let chartMain = null;
+let chartCross = null;
+
+function log(msg, type='') {
+  const el = document.getElementById('log-area');
+  el.innerHTML += `<span class="${type}">▸ ${msg}</span><br>`;
+}
+
+async function fetchData() {
+  const btn = document.getElementById('btn-fetch');
+  const badge = document.getElementById('conn-badge');
+  btn.disabled = true;
+  badge.className = 'badge warn';
+  badge.textContent = '● Cargando...';
+  log('Solicitando datos a HepData (CERN)...', '');
+
+  try {
+    const resp = await fetch('https://www.hepdata.net/record/ins1358249?format=json', {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    // Extraer Q² del independent_variables
+    const tabla = data.data_tables[0];
+    let q2s = [];
+    for (const dep of tabla.dependent_variables) {
+      const vals = dep.values;
+      q2s = vals.map(v => {
+        const x = v.x || v.value;
+        return parseFloat(x);
+      }).filter(v => !isNaN(v));
+      if (q2s.length > 0) break;
+    }
+    // fallback: independent_variables
+    if (q2s.length === 0) {
+      const indep = tabla.independent_variables;
+      for (const iv of indep) {
+        q2s = (iv.values || []).map(v => parseFloat(v.value)).filter(v => !isNaN(v));
+        if (q2s.length > 0) break;
+      }
+    }
+
+    if (q2s.length === 0) {
+      // Último fallback: usar el header / qualifiers
+      for (const dep of tabla.dependent_variables) {
+        for (const v of dep.values) {
+          if (v.qualifiers) {
+            for (const q of v.qualifiers) {
+              const n = parseFloat(q.value);
+              if (!isNaN(n) && n > 0) q2s.push(n);
+            }
+          }
+        }
+        if (q2s.length > 0) break;
+      }
+    }
+
+    if (q2s.length === 0) throw new Error('No se pudieron extraer Q²');
+    dataset = q2s.slice(0, 50);
+    badge.className = 'badge ok';
+    badge.textContent = `● ${dataset.length} pts · CERN HepData`;
+    log(`${dataset.length} puntos Q² cargados exitosamente.`, 'ok');
+    updateAll();
+  } catch (err) {
+    badge.className = 'badge err';
+    badge.textContent = '● Error de conexión';
+    log(`Error: ${err.message}. Usando fallback local.`, 'err');
+    // Fallback estandarizado
+    dataset = [3.5, 5.0, 6.5, 8.5, 10.0, 12.0, 15.0, 20.0, 24.0, 32.0];
+    updateAll();
+  }
+  btn.disabled = false;
+}
+
+function updateAll() {
+  updateStats();
+  updateTable();
+  updateChart();
+  updateCrossChart();
+}
+
+function updateStats() {
+  if (dataset.length === 0) return;
+  const min = Math.min(...dataset);
+  const max = Math.max(...dataset);
+  const avg = dataset.reduce((a,b)=>a+b,0)/dataset.length;
+  const row = document.getElementById('stats-row');
+  row.innerHTML = `
+    <div class="stat"><div class="stat-label">Puntos Q²</div><div class="stat-value">${dataset.length}</div></div>
+    <div class="stat"><div class="stat-label">Q² Mín (GeV²)</div><div class="stat-value">${min.toFixed(2)}</div></div>
+    <div class="stat"><div class="stat-label">Q² Máx (GeV²)</div><div class="stat-value">${max.toFixed(2)}</div></div>
+    <div class="stat"><div class="stat-label">Promedio</div><div class="stat-value">${avg.toFixed(2)}</div></div>
+  `;
+}
+
+function updateTable() {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = dataset.map((q, i) =>
+    `<tr><td>${i+1}</td><td>${q.toFixed(4)}</td><td>${Math.log10(q).toFixed(4)}</td></tr>`
+  ).join('');
+}
+
+function updateChart() {
+  const ctx = document.getElementById('chart-main').getContext('2d');
+  if (chartMain) chartMain.destroy();
+
+  const labels = dataset.map((_,i) => i+1);
+  chartMain = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Q² (GeV²)',
+        data: dataset,
+        backgroundColor: dataset.map(q => {
+          if (q < 10) return 'rgba(0,229,160,0.6)';
+          if (q < 20) return 'rgba(124,58,255,0.6)';
+          return 'rgba(255,77,0,0.6)';
+        }),
+        borderColor: dataset.map(q => {
+          if (q < 10) return '#00e5a0';
+          if (q < 20) return '#7c3aff';
+          return '#ff4d00';
+        }),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0e0e18', titleFont: { family: 'Share Tech Mono', size: 11 },
+          bodyFont: { family: 'Share Tech Mono', size: 12 },
+          borderColor: '#1e1e38', borderWidth: 1,
+          callbacks: {
+            label: ctx => `Q² = ${ctx.parsed.y.toFixed(2)} GeV²`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Punto de Medición', color: '#4a4a70',
+            font: { family: 'Rajdhani', size: 12 } },
+          ticks: { color: '#4a4a70', font: { family: 'Share Tech Mono', size: 9 } },
+          grid: { color: 'rgba(100,100,180,0.07)' }
+        },
+        y: {
+          title: { display: true, text: 'Q² (GeV²)', color: '#4a4a70',
+            font: { family: 'Rajdhani', size: 12 } },
+          ticks: { color: '#4a4a70', font: { family: 'Share Tech Mono', size: 9 } },
+          grid: { color: 'rgba(100,100,180,0.07)' }
+        }
+      }
+    }
+  });
+}
+
+function updateCrossChart() {
+  const ctx = document.getElementById('chart-cross').getContext('2d');
+  if (chartCross) chartCross.destroy();
+
+  // Correlación cruzada: simular módulo de cizalla G para cada Q²
+  const DIM = 8.0; const N1 = 12; const CAPAS = 30;
+  const eta_max = Math.PI / (3 * Math.sqrt(2));
+  const rho_base = Math.abs(((N1/(N1+1))**2) - (1/Math.sqrt(2)));
+  const Q_quarks = 3 / Math.sqrt(N1);
+
+  const sim = dataset.map(Q2 => {
+    const semi_eje = (DIM/2) / Math.log10(10 + Q2);
+    let sum = 0;
+    for (let j = 1; j <= CAPAS; j++) {
+      const nodos = 10 * j * j + 2;
+      const aten = (N1 / (N1 + j)) ** 2;
+      const rho = rho_base * (1 - 1/(j + Q_quarks));
+      sum += nodos * aten * (1 - rho);
+    }
+    const S = 1 + sum;
+    return S / semi_eje;  // módulo de cizalla G
+  });
+
+  const labels = dataset.map((_,i) => i+1);
+  chartCross = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      labels,
+      datasets: [{
+        label: 'G (Módulo Cizalla)',
+        data: dataset.map((q, i) => ({ x: q, y: sim[i] })),
+        backgroundColor: 'rgba(0,229,160,0.7)',
+        borderColor: '#00e5a0',
+        pointRadius: 5,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, position: 'top',
+          labels: { color: '#4a4a70', font: { family: 'Share Tech Mono', size: 10 } } },
+        tooltip: {
+          backgroundColor: '#0e0e18', titleFont: { family: 'Share Tech Mono', size: 11 },
+          bodyFont: { family: 'Share Tech Mono', size: 12 },
+          borderColor: '#1e1e38', borderWidth: 1,
+          callbacks: {
+            label: ctx => `Q²=${ctx.parsed.x.toFixed(2)} G=${ctx.parsed.y.toFixed(1)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Q² (GeV²)', color: '#4a4a70',
+            font: { family: 'Rajdhani', size: 12 } },
+          ticks: { color: '#4a4a70', font: { family: 'Share Tech Mono', size: 9 } },
+          grid: { color: 'rgba(100,100,180,0.07)' },
+          type: 'logarithmic'
+        },
+        y: {
+          title: { display: true, text: 'G (Módulo Cizalla)', color: '#4a4a70',
+            font: { family: 'Rajdhani', size: 12 } },
+          ticks: { color: '#4a4a70', font: { family: 'Share Tech Mono', size: 9 } },
+          grid: { color: 'rgba(100,100,180,0.07)' }
+        }
+      }
+    }
+  });
+}
+
+function exportCSV() {
+  if (dataset.length === 0) return;
+  let csv = 'idx, Q2_GeV2\n';
+  dataset.forEach((q, i) => { csv += `${i+1}, ${q}\n`; });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'presiones_q2_hepdata.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  log('CSV exportado.', 'ok');
+}
+
+// Inicio
+fetchData();
+</script>
+</body>
+</html>

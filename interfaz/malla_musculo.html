@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANCO DE PRUEBAS — MALLA ELÁSTICA DE JUAN</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap');
+
+  :root {
+    --bg: #09090f;
+    --panel: #0e0e18;
+    --border: #1e1e38;
+    --accent1: #ff4d00;
+    --accent2: #7c3aff;
+    --accent3: #00e5a0;
+    --text: #c8c8e0;
+    --dim: #4a4a70;
+    --grid: rgba(100,100,180,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  header {
+    padding: 18px 24px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .logo-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent1);
+    box-shadow: 0 0 12px var(--accent1);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  header h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent1);
+  }
+  .tag {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; color: var(--dim); letter-spacing: 2px;
+  }
+
+  .layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 52px); }
+
+  /* ── CONTROLS PANEL ─────────────────────────── */
+  .controls {
+    border-right: 1px solid var(--border);
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 18px;
+    background: var(--panel);
+  }
+  .ctrl-section { display: flex; flex-direction: column; gap: 10px; }
+  .ctrl-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; color: var(--dim);
+    text-transform: uppercase; border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+  .param {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .param-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .param-name { font-weight: 700; font-size: 13px; color: #e0e0ff; }
+  .param-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; color: var(--accent3); min-width: 48px; text-align: right;
+  }
+  .param-desc { font-size: 11px; color: var(--dim); line-height: 1.4; }
+
+  input[type=range] {
+    width: 100%; height: 3px; cursor: pointer;
+    appearance: none; background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    appearance: none; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent3); box-shadow: 0 0 8px var(--accent3);
+  }
+
+  .readout-box {
+    background: rgba(0,229,160,0.05);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 4px; padding: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .readout-row { display: flex; justify-content: space-between; align-items: center; }
+  .readout-key { font-size: 11px; color: var(--dim); }
+  .readout-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; color: var(--accent3);
+  }
+  .readout-val.alert { color: var(--accent1); }
+
+  /* ── MAIN CHARTS ─────────────────────────────── */
+  .charts { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .chart-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .chart-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase;
+  }
+  canvas { width: 100% !important; display: block; }
+
+  .full-card { grid-column: 1/-1; }
+
+  /* bottom stats bar */
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-label { font-size: 10px; color: var(--dim); letter-spacing: 1px; }
+  .stat-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 20px; font-weight: 700; color: var(--accent3);
+  }
+  .stat-value.warn { color: var(--accent1); }
+  .stat-sub { font-size: 10px; color: var(--dim); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-dot"></div>
+  <h1>Motor de Malla Elástica — Efecto Músculo Hiperdenso</h1>
+  <span class="tag">JUAN v4.1 // TALLER</span>
+</header>
+
+<div class="layout">
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="ctrl-section">
+      <div class="ctrl-label">Parámetros del Torno</div>
+
+      <div class="param">
+        <div class="param-header">
+          <span class="param-name">κ — Rigidez</span>
+          <span class="param-val" id="val-kappa">51.0</span>
+        </div>
+        <div class="param-desc">Rigidez intrínseca del núcleo FCC</div>
+        <input type="range" id="sl-kappa" min="5" max="150" step="0.5" value="51">
+      </div>
+
+      <div class="param">
+        <div class="param-header">
+          <span class="param-name">Γ — Tensión Lona</span>
+          <span class="param-val" id="val-gamma">15.0</span>
+        </div>
+        <div class="param-desc">Presión de Laplace del vacío exterior</div>
+        <input type="range" id="sl-gamma" min="1" max="80" step="0.5" value="15">
+      </div>
+
+      <div class="param">
+        <div class="param-header">
+          <span class="param-name">Q — Déficit</span>
+          <span class="param-val" id="val-q">-0.150</span>
+        </div>
+        <div class="param-desc">Contracción volumétrica del núcleo n=0</div>
+        <input type="range" id="sl-q" min="-0.5" max="-0.01" step="0.005" value="-0.15">
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Diagnóstico en Vivo</div>
+      <div class="readout-box">
+        <div class="readout-row">
+          <span class="readout-key">Capa de Corte n*</span>
+          <span class="readout-val alert" id="rd-ncorte">—</span>
+        </div>
+        <div class="readout-row">
+          <span class="readout-key">Radio Geodésico R*</span>
+          <span class="readout-val" id="rd-rstar">—</span>
+        </div>
+        <div class="readout-row">
+          <span class="readout-key">E_muelle límite</span>
+          <span class="readout-val" id="rd-emuelle">—</span>
+        </div>
+        <div class="readout-row">
+          <span class="readout-key">α⁻¹ en n*</span>
+          <span class="readout-val" id="rd-alfainv">—</span>
+        </div>
+        <div class="readout-row">
+          <span class="readout-key">Masa Oscura en n=100</span>
+          <span class="readout-val" id="rd-mfinal">—</span>
+        </div>
+        <div class="readout-row">
+          <span class="readout-key">Exceso vs plana</span>
+          <span class="readout-val alert" id="rd-exceso">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl-section" style="margin-top:auto">
+      <div class="ctrl-label">Leyenda</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:2px;background:#ff4d00"></div>
+          <span>P interna (∝ n⁻²)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:2px;background:#7c3aff"></div>
+          <span>P lona (∝ n⁻¹)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:2px;background:rgba(255,255,255,0.3);border-top:2px dashed rgba(255,255,255,0.3)"></div>
+          <span>Masa plana euclidiana</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:2px;background:#e7298a"></div>
+          <span>Masa EFT Malla (oscura)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:2px;background:#00e5a0;border-top:2px dashed #00e5a0"></div>
+          <span>Capa de corte n*</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts">
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">Atractor Dinámico — Cruce de Escalados</div>
+        <canvas id="cvPressure" height="240"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Anomalía de Masa — Efecto Músculo</div>
+        <canvas id="cvMass" height="240"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">Balance ΔP — Detección del Búnker</div>
+        <canvas id="cvDelta" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Deformación Métrica φ(n) — Contracción Radial</div>
+        <canvas id="cvPhi" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-label">Capa de Corte n*</span>
+        <span class="stat-value warn" id="st-ncorte">—</span>
+        <span class="stat-sub">Frontera del búnker</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">κ / Γ ratio</span>
+        <span class="stat-value" id="st-ratio">—</span>
+        <span class="stat-sub">Dureza relativa</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Masa Oscura %</span>
+        <span class="stat-value" id="st-mo">—</span>
+        <span class="stat-sub">Exceso en n=100</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">α⁻¹ en n*</span>
+        <span class="stat-value" id="st-alpha">—</span>
+        <span class="stat-sub">Acoplamiento</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ENGINE ───────────────────────────────────────────────────────
+function compute(kappa, Gamma, Q) {
+  const N = 100;
+  const sigma0 = 1.0;
+  const n = Array.from({length: N}, (_, i) => i + 1);
+
+  const phi_n   = n.map(ni => -Q / (4 * Math.PI * ni * ni));
+  const sigma_n = phi_n.map(p => sigma0 * (1 + p));
+
+  // cumsum R
+  const R_n = [];
+  let acc = 0;
+  sigma_n.forEach(s => { acc += s; R_n.push(acc); });
+
+  const P_int  = n.map((ni, i) => (18 * kappa) / (4 * Math.PI * sigma_n[i] * ni * ni));
+  const P_lona = R_n.map(r => (2 * Gamma) / r);
+  const dP     = P_int.map((p, i) => p - P_lona[i]);
+
+  let n_corte = N;
+  for (let i = 0; i < N; i++) { if (dP[i] < 0) { n_corte = n[i]; break; } }
+
+  // cumsum phi
+  const cumPhi = [];
+  let cpAcc = 0;
+  phi_n.forEach(p => { cpAcc += p; cumPhi.push(cpAcc); });
+
+  const masa_std  = n.map(ni => ni);
+  const masa_malla = masa_std.map((m, i) => m * (1 + cumPhi[i] * 4.5));
+
+  // alpha_inv at n_corte
+  const E_muelle = 0.5 * kappa * (1 / Gamma) ** 2;
+  let E_acc = 0;
+  for (let i = 0; i < n_corte; i++) {
+    const ni = n[i];
+    const nodos = ni === 0 ? 1 : 10 * ni * ni + 2;
+    const fac = (12 / (12 + ni)) ** 2;
+    E_acc += nodos * E_muelle * fac;
+  }
+  const alfa_inv = E_acc > 0 ? kappa / E_acc : 0;
+
+  return { n, phi_n, sigma_n, R_n, P_int, P_lona, dP, n_corte, masa_std, masa_malla, E_muelle, alfa_inv };
+}
+
+// ── CANVAS HELPERS ────────────────────────────────────────────────────
+function logScale(val, minV, maxV, h) {
+  if (val <= 0) return h;
+  const lMin = Math.log10(Math.max(minV, 1e-10));
+  const lMax = Math.log10(maxV);
+  const lVal = Math.log10(val);
+  return h - ((lVal - lMin) / (lMax - lMin)) * h;
+}
+
+function linScale(val, minV, maxV, h) {
+  return h - ((val - minV) / (maxV - minV)) * h;
+}
+
+function drawGrid(ctx, w, h, cols=5, rows=4) {
+  ctx.strokeStyle = 'rgba(100,100,180,0.08)';
+  ctx.lineWidth = 1;
+  for (let i=0; i<=cols; i++) {
+    const x = (i/cols)*w; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+  }
+  for (let i=0; i<=rows; i++) {
+    const y = (i/rows)*h; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+  }
+}
+
+function drawLine(ctx, xs, ys, color, lw=1.5, dash=[]) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = lw;
+  ctx.setLineDash(dash);
+  ctx.beginPath();
+  xs.forEach((x, i) => i===0 ? ctx.moveTo(x, ys[i]) : ctx.lineTo(x, ys[i]));
+  ctx.stroke(); ctx.restore();
+}
+
+// ── CHART 1: Pressure (log) ──────────────────────────────────────────
+function drawPressure(d) {
+  const cv = document.getElementById('cvPressure');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth - 32;
+  const H = 240;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  drawGrid(ctx, W, H);
+
+  const pad = 12;
+  const all = [...d.P_int, ...d.P_lona].filter(v => v > 0);
+  const minV = Math.min(...all) * 0.5;
+  const maxV = Math.max(...all) * 1.5;
+
+  const xs = d.n.map(ni => pad + (ni-1)/(d.n.length-1) * (W - 2*pad));
+  const yInt  = d.P_int.map(v  => logScale(v, minV, maxV, H - pad) + pad/2);
+  const yLona = d.P_lona.map(v => logScale(v, minV, maxV, H - pad) + pad/2);
+
+  drawLine(ctx, xs, yInt,  '#ff4d00', 2);
+  drawLine(ctx, xs, yLona, '#7c3aff', 2);
+
+  // vertical line at n_corte
+  if (d.n_corte <= 100) {
+    const xc = pad + (d.n_corte - 1) / (d.n.length - 1) * (W - 2*pad);
+    ctx.save();
+    ctx.strokeStyle = '#00e5a0'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(xc, 0); ctx.lineTo(xc, H); ctx.stroke();
+    ctx.restore();
+    // label
+    ctx.fillStyle = '#00e5a0'; ctx.font = "11px 'Share Tech Mono'";
+    ctx.fillText(`n*=${d.n_corte}`, xc + 4, 18);
+  }
+}
+
+// ── CHART 2: Mass ────────────────────────────────────────────────────
+function drawMass(d) {
+  const cv = document.getElementById('cvMass');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth - 32;
+  const H = 240;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  drawGrid(ctx, W, H);
+
+  const pad = 12;
+  const allM = [...d.masa_std, ...d.masa_malla];
+  const minM = Math.min(...allM);
+  const maxM = Math.max(...allM) * 1.05;
+
+  const xs = d.n.map(ni => pad + (ni-1)/(d.n.length-1) * (W - 2*pad));
+  const yStd  = d.masa_std.map(v  => linScale(v, minM, maxM, H - 2*pad) + pad);
+  const yMall = d.masa_malla.map(v => linScale(v, minM, maxM, H - 2*pad) + pad);
+
+  drawLine(ctx, xs, yStd,  'rgba(255,255,255,0.25)', 1.5, [5,4]);
+  drawLine(ctx, xs, yMall, '#e7298a', 2.5);
+
+  // fill between
+  ctx.save();
+  ctx.beginPath();
+  xs.forEach((x, i) => i===0 ? ctx.moveTo(x, yMall[i]) : ctx.lineTo(x, yMall[i]));
+  xs.slice().reverse().forEach((x, i) => ctx.lineTo(x, yStd[d.n.length-1-i]));
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(231,41,138,0.08)';
+  ctx.fill();
+  ctx.restore();
+}
+
+// ── CHART 3: Delta P ─────────────────────────────────────────────────
+function drawDelta(d) {
+  const cv = document.getElementById('cvDelta');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth - 32;
+  const H = 200;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  drawGrid(ctx, W, H);
+
+  const pad = 12;
+  const minD = Math.min(...d.dP);
+  const maxD = Math.max(...d.dP);
+  const span = maxD - minD || 1;
+  const xs = d.n.map(ni => pad + (ni-1)/(d.n.length-1) * (W - 2*pad));
+  const yD  = d.dP.map(v => H - pad - ((v - minD) / span) * (H - 2*pad));
+
+  // zero line
+  const y0 = H - pad - ((0 - minD) / span) * (H - 2*pad);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
+  ctx.setLineDash([3,4]);
+  ctx.beginPath(); ctx.moveTo(pad, y0); ctx.lineTo(W-pad, y0); ctx.stroke();
+  ctx.restore();
+
+  // positive fill
+  ctx.save();
+  ctx.beginPath();
+  xs.forEach((x, i) => {
+    const y = yD[i];
+    const yBase = Math.min(y, y0);
+    i===0 ? ctx.moveTo(x, y0) : null;
+    ctx.lineTo(x, d.dP[i] > 0 ? y : y0);
+  });
+  ctx.lineTo(xs[xs.length-1], y0);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(255,77,0,0.12)'; ctx.fill(); ctx.restore();
+
+  // negative fill
+  ctx.save();
+  ctx.beginPath();
+  let started = false;
+  xs.forEach((x, i) => {
+    if (d.dP[i] < 0) {
+      if (!started) { ctx.moveTo(x, y0); started = true; }
+      ctx.lineTo(x, yD[i]);
+    }
+  });
+  if (started) {
+    const lastNeg = d.dP.lastIndexOf(d.dP.filter(v=>v<0).slice(-1)[0]);
+    ctx.lineTo(xs[Math.min(lastNeg, xs.length-1)], y0);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(124,58,255,0.15)'; ctx.fill();
+  }
+  ctx.restore();
+
+  drawLine(ctx, xs, yD, '#ff9955', 1.8);
+
+  // label zero
+  ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = "9px 'Share Tech Mono'";
+  ctx.fillText('ΔP=0', pad+2, y0 - 4);
+}
+
+// ── CHART 4: Phi deformation ─────────────────────────────────────────
+function drawPhi(d) {
+  const cv = document.getElementById('cvPhi');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth - 32;
+  const H = 200;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  drawGrid(ctx, W, H);
+
+  const pad = 12;
+  const minP = Math.min(...d.phi_n);
+  const maxP = Math.max(...d.phi_n) * 1.1 || 0.001;
+  const span = maxP - minP || 1;
+  const xs = d.n.map(ni => pad + (ni-1)/(d.n.length-1) * (W - 2*pad));
+  const yP  = d.phi_n.map(v => H - pad - ((v - minP) / span) * (H - 2*pad));
+
+  // area fill
+  ctx.save();
+  ctx.beginPath();
+  xs.forEach((x, i) => i===0 ? ctx.moveTo(x, H-pad) : null);
+  xs.forEach((x, i) => ctx.lineTo(x, yP[i]));
+  ctx.lineTo(xs[xs.length-1], H-pad);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,229,160,0.07)'; ctx.fill(); ctx.restore();
+
+  drawLine(ctx, xs, yP, '#00e5a0', 2);
+
+  // annotation at n=1
+  ctx.fillStyle = '#00e5a0'; ctx.font = "10px 'Share Tech Mono'";
+  ctx.fillText(`φ(1)=${d.phi_n[0].toExponential(2)}`, pad+4, 20);
+}
+
+// ── READOUTS ──────────────────────────────────────────────────────────
+function updateReadouts(d, kappa, Gamma) {
+  const fmt = v => typeof v === 'number' ? v.toFixed(4) : v;
+  document.getElementById('rd-ncorte').textContent = d.n_corte <= 100 ? d.n_corte : '>100';
+  document.getElementById('rd-rstar').textContent  = fmt(d.R_n[d.n_corte - 1]);
+  document.getElementById('rd-emuelle').textContent = fmt(d.E_muelle);
+  document.getElementById('rd-alfainv').textContent = fmt(d.alfa_inv);
+
+  const mLast = d.masa_malla[99];
+  const mStd  = d.masa_std[99];
+  const exceso = ((mLast/mStd - 1) * 100).toFixed(1);
+  document.getElementById('rd-mfinal').textContent = mLast.toFixed(2) + ' u.t.';
+  document.getElementById('rd-exceso').textContent = '+' + exceso + '%';
+
+  document.getElementById('st-ncorte').textContent = d.n_corte <= 100 ? d.n_corte : '>100';
+  document.getElementById('st-ratio').textContent  = (kappa/Gamma).toFixed(2);
+  document.getElementById('st-mo').textContent     = exceso + '%';
+  document.getElementById('st-alpha').textContent  = d.alfa_inv > 0 ? d.alfa_inv.toFixed(2) : '—';
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────
+function render() {
+  const kappa = parseFloat(document.getElementById('sl-kappa').value);
+  const Gamma = parseFloat(document.getElementById('sl-gamma').value);
+  const Q     = parseFloat(document.getElementById('sl-q').value);
+
+  document.getElementById('val-kappa').textContent = kappa.toFixed(1);
+  document.getElementById('val-gamma').textContent = Gamma.toFixed(1);
+  document.getElementById('val-q').textContent     = Q.toFixed(3);
+
+  const d = compute(kappa, Gamma, Q);
+
+  drawPressure(d);
+  drawMass(d);
+  drawDelta(d);
+  drawPhi(d);
+  updateReadouts(d, kappa, Gamma);
+}
+
+// Events
+['sl-kappa','sl-gamma','sl-q'].forEach(id => {
+  document.getElementById(id).addEventListener('input', render);
+});
+
+window.addEventListener('resize', render);
+render();
+</script>
+</body>
+</html>

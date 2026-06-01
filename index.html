@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LABORATORIO ARMÓNICO — Portal de Experimentos</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090f;
+    --panel: #0e0e18;
+    --border: #1e1e38;
+    --accent1: #ff4d00;
+    --accent2: #7c3aff;
+    --accent3: #00e5a0;
+    --text: #c8c8e0;
+    --dim: #4a4a70;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Rajdhani',sans-serif; min-height:100vh;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    pointer-events:none; z-index:9999;
+  }
+  header {
+    padding:18px 24px 12px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:16px;
+  }
+  .dot {
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent1);
+    box-shadow:0 0 12px var(--accent1);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  header h1 {
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--accent1);
+  }
+  .tag { margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px;color:var(--dim);letter-spacing:2px; }
+
+  .hero {
+    padding:60px 24px 40px; text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  .hero h2 {
+    font-size:32px;font-weight:700;letter-spacing:2px;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero p { margin-top:12px;font-size:16px;color:var(--dim);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6; }
+
+  .grid {
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:16px;padding:24px;max-width:1200px;margin:0 auto;
+  }
+  .card {
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:6px;padding:20px;
+    display:flex;flex-direction:column;gap:10px;
+    transition:border-color 0.2s,transform 0.2s;
+    cursor:pointer;text-decoration:none;color:var(--text);
+  }
+  .card:hover { border-color:var(--accent3);transform:translateY(-2px); }
+  .card-icon { font-size:28px; }
+  .card-title {
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent3);
+  }
+  .card-desc { font-size:13px;color:var(--dim);line-height:1.5; }
+  .card-status {
+    margin-top:auto;padding-top:10px;border-top:1px solid var(--border);
+    font-size:10px;font-family:'Share Tech Mono',monospace;
+    display:flex;justify-content:space-between;
+  }
+  .status-ok { color:var(--accent3); }
+  .status-warn { color:var(--accent1); }
+
+  .section-title {
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--dim);
+    text-transform:uppercase;padding:24px 24px 0;
+    max-width:1200px;margin:0 auto;
+  }
+
+  .data-bar {
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:12px;padding:24px;max-width:1200px;margin:0 auto;
+  }
+  .data-card {
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:4px;padding:14px;
+  }
+  .data-label { font-size:10px;color:var(--dim);letter-spacing:1px; }
+  .data-value {
+    font-family:'Share Tech Mono',monospace;
+    font-size:22px;font-weight:700;color:var(--accent3);margin-top:4px;
+  }
+  .data-sub { font-size:10px;color:var(--dim);margin-top:2px; }
+
+  footer {
+    text-align:center;padding:24px;
+    border-top:1px solid var(--border);
+    font-size:11px;color:var(--dim);font-family:'Share Tech Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="dot"></div>
+  <h1>Laboratorio Armónico — Malla Elástica</h1>
+  <span class="tag">v1.0 // PORTAL</span>
+</header>
+
+<section class="hero">
+  <h2>Superficie de Experimentación</h2>
+  <p>Plataforma unificada para la inyección de presiones Q², mapeo de difracción FCC,
+     y diagnóstico de viscosidad elástica sobre datos públicos del CERN.</p>
+</section>
+
+<div class="section-title">╰─ Laboratorios Activos</div>
+<div class="grid">
+
+  <a class="card" href="interfaz/malla_musculo.html">
+    <div class="card-icon">⚙</div>
+    <div class="card-title">Motor de Malla Elástica</div>
+    <div class="card-desc">Parámetros del torno: rigidez κ, tensión Γ, déficit Q.
+    Visualización del atractor dinámico, anomalía de masa y capa de corte n*.</div>
+    <div class="card-status"><span class="status-ok">● Online</span><span>κ, Γ, Q</span></div>
+  </a>
+
+  <a class="card" href="experimentos/exp3_difraccion.py" target="_blank">
+    <div class="card-icon">〰</div>
+    <div class="card-title">Difracción Octatopo (Exp 3)</div>
+    <div class="card-desc">Bifurcación en 8 direcciones, permeabilidad FCC,
+    trazado de flujo B y diagnóstico de simetría bajo carga Q².</div>
+    <div class="card-status"><span class="status-warn">● CLI</span><span>Python</span></div>
+  </a>
+
+  <a class="card" href="dashboard.html">
+    <div class="card-icon">◈</div>
+    <div class="card-title">Dashboard de Datos Públicos</div>
+    <div class="card-desc">Conexión en vivo con HepData (CERN). Exploración de
+    presiones reales, correlación cruzada y exportación.</div>
+    <div class="card-status"><span class="status-ok">● Online</span><span>API CERN</span></div>
+  </a>
+
+  <a class="card" href="https://www.hepdata.net/record/ins1358249" target="_blank">
+    <div class="card-icon">▤</div>
+    <div class="card-title">Fuente: HepData CERN</div>
+    <div class="card-desc">Registro oficial ins1358249 — datos de estructura
+    confinada con acoplamiento FCC en base 8.</div>
+    <div class="card-status"><span class="status-ok">● Externa</span><span>CERN</span></div>
+  </a>
+
+</div>
+
+<div class="section-title">╰─ Datos en Vivo — HepData (CERN)</div>
+<div class="data-bar" id="live-data">
+  <div class="data-card">
+    <div class="data-label">Conectando con CERN...</div>
+    <div class="data-value" style="font-size:14px;">Cargando</div>
+  </div>
+</div>
+
+<script>
+async function cargarDatosCERN() {
+  const container = document.getElementById('live-data');
+  try {
+    const resp = await fetch('https://www.hepdata.net/record/ins1358249?format=json', { signal: AbortSignal.timeout(8000) });
+    const data = await resp.json();
+    const vars = data.data_tables[0].independent_variables[0].values;
+    const q2s = vars.map(v => parseFloat(v.value)).filter(v => !isNaN(v));
+    const minQ = Math.min(...q2s);
+    const maxQ = Math.max(...q2s);
+    const avgQ = q2s.reduce((a,b)=>a+b,0)/q2s.length;
+
+    container.innerHTML = `
+      <div class="data-card">
+        <div class="data-label">Puntos de Presión Q²</div>
+        <div class="data-value">${q2s.length}</div>
+        <div class="data-sub">Muestras cargadas</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Q² Mín</div>
+        <div class="data-value">${minQ.toFixed(2)}</div>
+        <div class="data-sub">GeV²</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Q² Máx</div>
+        <div class="data-value">${maxQ.toFixed(2)}</div>
+        <div class="data-sub">GeV²</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Q² Promedio</div>
+        <div class="data-value">${avgQ.toFixed(2)}</div>
+        <div class="data-sub">GeV²</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Estado</div>
+        <div class="data-value" style="font-size:14px;color:var(--accent3);">● Conectado</div>
+        <div class="data-sub">CERN HepData — ins1358249</div>
+      </div>
+    `;
+  } catch {
+    container.innerHTML = `
+      <div class="data-card">
+        <div class="data-label">Estado de Conexión</div>
+        <div class="data-value" style="font-size:14px;color:var(--accent1);">● Sin Conexión</div>
+        <div class="data-sub">Fallback: datos locales disponibles</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">Modo</div>
+        <div class="data-value" style="font-size:14px;">Offline</div>
+        <div class="data-sub">Rampa estandarizada HERA</div>
+      </div>
+    `;
+  }
+}
+cargarDatosCERN();
+</script>
+
+<footer>
+  LABORATORIO ARMÓNICO — MALLA ELÁSTICA // JUAN v4.1<br>
+  Datos públicos vía CERN HepData · Plataforma auto-contenida
+</footer>
+
+</body>
+</html>
