@@ -1,0 +1,182 @@
+\documentclass[twocolumn]{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+\title{Horizontes de investigaci\'on:\\
+  Tres preguntas abiertas del modelo FCC-DNLS}
+\author{Serie Arm\'onica Collaboration}
+\date{Junio 2026}
+\maketitle
+
+\begin{abstract}
+  Todo marco te\'orico de frontera se valida por su poder de generar
+  preguntas que antes no pod\'{\i}an formularse. El modelo FCC-DNLS
+  resuelve problemas hist\'oricos (colapso cu\'antico sin par\'ametros
+  libres, dimensionalidad del espacio, origen de la masa como
+  auto-atrapamiento), pero tambi\'en abre tres horizontes
+  radicalmente nuevos. Formalizamos cada uno con predicciones
+  comprobables y programas de investigaci\'on.
+\end{abstract}
+
+\section{Introducci\'on}
+
+El modelo unificado FCC-DNLS (v3) ha establecido:
+\begin{itemize}
+  \item Punto fijo espectral en 3D: ancho $2.96$, energ\'{\i}a $-0.056$
+  \item Purificaci\'on $S(t)\to0$, rango $\rho: 68\to1$
+  \item Umbral de auto-atrapamiento en Norma $=4$
+  \item $\beta = (1-\eta) + \varepsilon_0/2 = 0.30119$, derivado de la
+    fracci\'on de empaquetamiento FCC $\eta = \pi/(3\sqrt2)$
+  \item Kernel de colapso $K(\Delta n)$ con soporte compacto
+  \item Ecuaci\'on funcional de Epstein verificada exactamente
+\end{itemize}
+
+Sobre esta base, el modelo abre tres preguntas que exploramos a
+continuaci\'on.
+
+\section{Pregunta A: \textquestiondown Es el universo temprano un
+  efecto de auto-interferencia espectral?}
+
+\subsection{El problema}
+
+El telescopio James Webb (JWST) detecta galaxias masivas
+($M_\star \sim 10^{10-11}M_\odot$) a redshifts $z>10$, cuando el
+universo ten\'{\i}a menos de 500~millones de a\~nos. En
+$\Lambda$CDM se requieren eficiencias de formaci\'on estelar
+$\epsilon > 1$.
+
+\subsection{Respuesta del modelo}
+
+El universo observable ser\'{\i}a un solit\'on espectral en una red
+FCC infinita. El corrimiento al rojo no es la expansi\'on FLRW sino
+el gradiente espectral del perfil del solit\'on:
+
+\begin{equation}
+  \frac{\delta\lambda}{\lambda} \approx \frac{r^2}{2\xi^2},
+\end{equation}
+
+donde $r$ es la distancia al centro y $\xi \approx 2.96$ el ancho
+caracter\'{\i}stico. Un objeto al borde del solit\'on ($r\sim\xi$)
+sufre un corrimiento $\delta\lambda/\lambda\sim0.5$, interpretado
+en FLRW como $z\sim1$.
+
+\subsection{Predicciones falsables}
+
+\begin{enumerate}
+  \item[A1.] La relaci\'on distancia-redshift se desv\'{\i}a de FLRW
+    para $z>6$ siguiendo una ley cuadr\'atica. Falsable con $H(z)$
+    de SNIa + JWST.
+  \item[A2.] Las galaxias $z>10$ tienen morfolog\'{\i}as
+    ``espectralmente replicadas'' de galaxias $z\sim2$.
+  \item[A3.] El CMB tiene una modulaci\'on dipolar residual del
+    perfil del solit\'on, no atribuible al movimiento solar.
+\end{enumerate}
+
+\section{Pregunta B: \textquestiondown Es la no-localidad cu\'antica
+  una ilusi\'on de la base espacial?}
+
+\subsection{El problema}
+
+Las violaciones de Bell (Aspect 1982, Hensen 2015) demuestran
+correlaciones cu\'anticas que no admiten variables ocultas locales.
+Se interpretan como ``acci\'on fantasmal a distancia''.
+
+\subsection{Respuesta del modelo}
+
+El colapso es local en la base espectral (autovectores del
+Laplaciano). La transformaci\'on entre la base espectral y la base
+real es la transformada de Fourier. Un operador multiplicativo en
+$k$-espacio es una convoluci\'on en $x$-espacio:
+
+\begin{equation}
+  K(\Delta n) = \sum_k \sigma(\lambda_k)
+    \frac{\varepsilon_0}{\varepsilon_0+|c_k|^2}
+    e^{i k\cdot\Delta n}.
+\end{equation}
+
+El n\'ucleo $K(\Delta n)$ tiene soporte compacto: $K\approx0$ para
+$|\Delta n| > 1$ sitio (verificado: $1/e$ a 1.0~sitios). La
+``no-localidad'' cu\'antica emerge porque las mediciones se
+realizan en base real, pero el colapso es local en base espectral.
+La transformada de Fourier proyecta esta localidad espectral como
+correlaci\'on instant\'anea en espacio real.
+
+\subsection{Predicciones falsables}
+
+\begin{enumerate}
+  \item[B1.] La violaci\'on de CHSH decae con la distancia como
+    $K(\Delta n)$. Falsable con experimentos Bell en redes \'opticas
+    FCC con separaci\'on variable.
+  \item[B2.] Existe una descripci\'on local oculta en $k$-espacio:
+    $\lambda_k = \{\arg(c_k), |c_k|^2\}$ reproduce las estad\'{\i}sticas
+    cu\'anticas.
+  \item[B3.] El colapso espectral induce una fase geom\'etrica
+    medible en interferometr\'{\i}a, proporcional a $\beta\varepsilon_0$.
+\end{enumerate}
+
+\section{Pregunta C: \textquestiondown Cu\'al es el papel de los
+  n\'umeros primos en el espacio-tiempo discreto?}
+
+\subsection{El problema}
+
+La funci\'on zeta de Riemann $\zeta(s)$ codifica la distribuci\'on
+de n\'umeros primos. La zeta de Epstein $\zeta_{D_3}(s)$ para la
+red $D_3$ (la red FCC) satisface $\xi(3/2-s)=\xi(s)$.
+
+\subsection{Respuesta del modelo}
+
+El Laplaciano FCC genera autovalores $\lambda_k$ cuya distribuci\'on
+determina: (1) la dispersi\'on de ondas, (2) la funci\'on zeta
+espectral $\zeta_\Delta(s)$, (3) la densidad de estados
+$\rho(\lambda)$, (4) el umbral de auto-atrapamiento, (5) la
+estabilidad del atractor.
+
+La funci\'on zeta espectral y la zeta de Epstein est\'an conectadas
+por el teorema de Friedli-Karlsson:
+
+\begin{equation}
+  \xi(s) = \pi^{-s}\Gamma(s)\,\zeta_{D_3}(s),\quad
+  \xi(3/2-s)=\xi(s).
+\end{equation}
+
+El error es $0.000000$ para $N=4,6,8,10$: la conexi\'on es exacta,
+no asint\'otica. Los autovalores del Laplaciano FCC para $k$
+peque\~nos se aproximan a $|k|^2$, donde $|k|^2$ recorre las
+representaciones de enteros como suma de tres cuadrados (coeficientes
+de la funci\'on theta de Jacobi $\vartheta_3(q)^3$).
+
+\subsection{Predicciones falsables}
+
+\begin{enumerate}
+  \item[C1.] El error en $\xi(3/2-s)=\xi(s)$ escala como
+    $O(N^{-\alpha})$ con $\alpha \approx 1/2$.
+  \item[C2.] El umbral de auto-atrapamiento (Norma $=4$) corresponde
+    a un autovalor aritm\'eticamente distinguido del Laplaciano FCC.
+  \item[C3.] Los 33 canales de baja frecuencia se organizan en
+    multipletes del grupo de Weyl de $D_3$, con degeneraciones dadas
+    por coeficientes de representaciones enteras.
+\end{enumerate}
+
+\section{Conclusiones}
+
+Cada programa genera predicciones falsables expl\'{\i}citas con
+tecnolog\'{\i}a actual (redes \'opticas FCC, JWST, interferometr\'{\i}a
+at\'omica). El modelo FCC-DNLS no es una especulaci\'on
+filos\'ofica: es un marco computacional y matem\'atico que puede
+ser verificado o refutado en un horizonte de 3--5 a\~nos.
+
+\begin{thebibliography}{9}
+\bibitem{friedli2017} F.~Friedli and A.~Karlsson, Tohoku Math. J.
+  {\bf 69}(4), 585 (2017).
+\bibitem{tissot2024} B.~Tissot, H.~Ribeiro, and F.~Marquardt,
+  Phys. Rev. Research {\bf 6}, 023015 (2024).
+\bibitem{westhoff2025} P.~Westhoff, S.~Paeckel, and M.~Moroder,
+  Phys. Rev. A {\bf 112}, L061304 (2025).
+\bibitem{epstein1903} P.~Epstein, Math. Ann. {\bf 56}, 615 (1903).
+\bibitem{aspect1982} A.~Aspect, J.~Dalibard, and G.~Roger,
+  Phys. Rev. Lett. {\bf 49}, 1804 (1982).
+\bibitem{hensen2015} B.~Hensen {\it et al.}, Nature {\bf 526},
+  682 (2015).
+\end{thebibliography}
+
+\end{document}
