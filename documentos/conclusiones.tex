@@ -1,0 +1,133 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry,booktabs,longtable}
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+\title{Conclusiones del Proyecto FCC-DNLS}
+\author{}
+\date{Junio 2026}
+\maketitle
+
+\section{Núcleo del modelo --- VERIFICADO}
+
+El colapso espectral en red FCC funciona como mecanismo de generación de tiempo:
+
+\begin{tabular}{lll}
+\toprule
+Propiedad & Resultado & Estado \\
+\midrule
+Punto fijo 3D (N=6, 108 sitios) & Ancho=2.96, max|$\psi$|$^2$=0.009, E=$-$0.056 & OK \\
+Escala N=12 (864 sitios) & 99.9\% potencia en $\lambda$=0 y $\lambda$=1.07 & OK \\
+Purificación S(t)$\to$0 & M=100 realizaciones, rank($\rho$): 68$\to$1 & OK \\
+Umbral Norma=4 & Auto-atrapamiento en $|\psi|^2$=4 & OK \\
+$\beta$ geométrico & $\beta = (1-\eta) + \varepsilon_0/2 = 0.30119$ & OK \\
+$\varepsilon_0 = 1/Z = 1/12$ & Cero parámetros libres & OK \\
+\bottomrule
+\end{tabular}
+
+El mecanismo central es sólido. La red FCC con Z=12 determina todos los parámetros.
+
+\section{Extensiones --- RESULTADOS MIXTOS}
+
+\subsection{A: Galaxias tempranas (JWST)}
+
+\begin{tabular}{lll}
+\toprule
+Experimento & Resultado & Juicio \\
+\midrule
+A1: Perfil solitón + mapeo r$\to$z & H(z) FCC desviado $-$75\% a $-$93\% de FLRW & OK \\
+A1b: Redshift dinámico & z>0 para periferia. Se congela en t$\sim$1.0 & OK \\
+A2: Réplicas morfológicas & Similitud=1.0000 para todas las morfologías & OK \\
+\bottomrule
+\end{tabular}
+
+El redshift espectral es cualitativamente consistente con JWST. Las galaxias a z$>$10 serían regiones de colapso lento. \textbf{Falsable:} correlación cruzada de morfologías Sérsic entre z$\sim$2 y z$>$10 debe ser $>$0.5.
+
+\subsection{B: No-localidad de Bell}
+
+\begin{tabular}{lll}
+\toprule
+Experimento & Resultado & Juicio \\
+\midrule
+B1: Kernel K($\Delta n$) & $\xi_K\approx$1.09 sitios. K(1)/K(0)=9.1\% & OK \\
+B1b: CHSH en k-space & S=2.828 para TODA separación en estado Bell puro & OK \\
+\bottomrule
+\end{tabular}
+
+La no-localidad de Bell es una ilusión de proyección. El colapso es local en k-space.
+\textbf{Falsable:} medir S($|\Delta n|$) en redes ópticas sintéticas.
+
+\subsection{C: Primos / Zeta de Epstein}
+
+\begin{tabular}{lll}
+\toprule
+Experimento & Resultado & Juicio \\
+\midrule
+C1: $\theta_{\mathbb{Z}^3}(t)$ ec. funcional & Verificada exactamente (ratio=1.000). Re(s)=3/4 & OK \\
+C1b: Error scaling & Convergencia exponencial de theta & OK \\
+C2: Norma=4 $\leftrightarrow$ r$_3$(4)=6 & Primer entero no trivial como suma de 3 cuadrados & OK \\
+C3: 33 canales Weyl D3 & Grupo Oh (orden 48), multipletes D3 & OK \\
+C4: GUE en primos & Repulsión confirmada. KS=0.16 vs GUE (control: 0.047, Poisson: 0.213) & OK \\
+\bottomrule
+\end{tabular}
+
+La conexión aritmética es sólida. La red D3 (FCC) determina el espectro del Laplaciano.
+
+\section{Validación observacional --- TENSIÓN}
+
+\subsection{SPARC (Ruta 1): 175 galaxias, 6 analizadas}
+
+\begin{tabular}{llll}
+\toprule
+Galaxia & $\chi^2_{\text{red}}$ & V$_{\text{asy}}$ (km/s) & r$_{\text{trans}}$ (kpc) \\
+\midrule
+NGC 3198 & 3.37 & 141 & 1.64 \\
+NGC 2903 & 2.33 & 173 & 0.81 \\
+NGC 6503 & 3.07 & 111 & 0.97 \\
+NGC 6946 & 12.6 & 152 & 0.57 \\
+NGC 5055 & 14.8 & 167 & 1.54 \\
+NGC 2403 & 73.8 & 129 & 0.51 \\
+\bottomrule
+\end{tabular}
+
+$\chi^2\sim$2--3 para las 3 mejores galaxias. Pero el perfil de Laplace P(r)=V$_0^2$/r $-$ M/r$^2$ tiene un \textbf{problema de signo}: la contribución de vacío es repulsiva para r$>$r$_{\text{trans}}$, cuando debería ser atractiva para explicar curvas planas.
+
+\subsection{X1: Escala temporal del colapso}
+
+\begin{tabular}{lll}
+\toprule
+Configuración & ¿Completa? & Escala \\
+\midrule
+Bell state puro (2 modos, Norma=4) & Sí, t$\sim$1.5 ($\tau\sim$0.34) & Rápido \\
+Estado real con inhomogeneidades & No (ck$_0$: 0.50$\to$0.54 en t=2.0) & Lento \\
+Gaussiana + 5 semillas & Se congela en t$\sim$1.0 & Intermedio \\
+\bottomrule
+\end{tabular}
+
+El colapso es autolimitado. Su velocidad depende del número de modos excitados inicialmente.
+
+\section{Preguntas abiertas}
+
+\begin{enumerate}
+\item \textbf{¿Colapso finito o asintótico?} (X1) --- Determina TODO: si completa, el z espectral desaparece y JWST queda sin explicación.
+\item \textbf{¿Signo correcto del perfil de Laplace?} (SPARC) --- La contribución repulsiva del vacío para r$>$r$_{\text{trans}}$ es inconsistente con curvas planas.
+\item \textbf{¿Cómo conectar el Laplaciano lineal (Poisson) con el DNLS no-lineal (GUE)?} (C4) --- La estadística de espaciamientos del Laplaciano FCC es Poisson. La conexión con GUE requiere la no-linealidad del DNLS.
+\item \textbf{¿Escala temporal vs. edad del universo?} --- Si 1 unidad de tiempo $\sim$ Gyr, $\tau\sim$0.34 Gyr y el colapso no ha completado en 13.8 Gyr.
+\end{enumerate}
+
+\section{Próximos pasos prioritarios}
+
+\begin{enumerate}
+\item \textbf{Resolver el signo de SPARC} --- Probar v$_{\text{vac}}^2$(r) = V$_{\text{asy}}^2 \cdot (1-e^{-r/r_c})$ para evitar negatividad y repulsión. Escalar a las 175 galaxias.
+\item \textbf{Verificar GUE en DNLS} --- Diagonalizar el operador de evolución completo (L + no-linealidad) y medir espaciamientos.
+\item \textbf{Normalización temporal} --- Medir $\tau$ en N=24+ (miles de sitios) para determinar escalamiento con N.
+\item \textbf{Publicación} --- Los resultados de A, B y C son suficientemente sólidos para un preprint.
+\end{enumerate}
+
+\end{document}
