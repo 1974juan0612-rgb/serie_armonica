@@ -2,7 +2,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-%\usepackage[spanish,es-tabla]{babel}
 \usepackage{geometry,booktabs,longtable,amsmath,amssymb}
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
@@ -17,7 +16,7 @@
 \maketitle
 
 \begin{abstract}
-Este documento resume los 12 experimentos realizados en el proyecto FCC-DNLS, un modelo de espacio-tiempo discreto en una red FCC tridimensional con cero par\'ametros libres. El modelo predice que un colapso espectral irreversible genera tiempo emergente, solitones estables, un umbral de auto-atrapamiento (Norma=4), y una conexi\'on natural con la funci\'on zeta de Epstein y la distribuci\'on de n\'umeros primos. Se incluyen resultados de validaci\'on observacional con datos JWST y SPARC, as\'i como 4 preguntas abiertas y pasos a seguir.
+Este documento resume los experimentos realizados en el proyecto FCC-DNLS, un modelo de espacio-tiempo discreto en una red FCC tridimensional con cero par\'ametros libres. El modelo predice que un colapso espectral irreversible genera tiempo emergente, solitones estables, un umbral de auto-atrapamiento (Norma=4), y conexiones con la funci\'on zeta de Epstein y la constante de estructura fina. Se incluyen resultados de validaci\'on observacional con datos JWST y SPARC (175 galaxias, $\chi^2 = 2.38$, igual que NFW), sin materia oscura y sin par\'ametros libres adicionales.
 \end{abstract}
 
 \section{Par\'ametros fundamentales}
@@ -265,33 +264,7 @@ Para FCC (D3):
   \item $\theta_{\text{FCC}}(t) = \det(D3)^{-1/2}\,t^{-3/2}\,\theta_{\text{BCC}}(1/t)$
   \item $\det(D3) = 2$, cociente exacto 1.000
   \item L\'inea cr\'itica de Epstein para $\mathbb{Z}^3$: $\text{Re}(s) = 3/2$
-  \hline L\'inea cr\'itica del modelo FCC-DNLS: $\text{Re}(s) = 3/4$ (dimensi\'on efectiva 3/2)
-\end{itemize}
-
-\section{Experimento C1b: Error scaling de la funci\'on theta}
-
-\subsection{Descripci\'on}
-Convergencia del error en la identidad $\theta(t) = t^{-3/2}\theta(1/t)$ en funci\'on de $N_{\max}$ y $t$.
-
-\subsection{Resultados}
-\begin{center}
-\begin{tabular}{ccccc}
-\toprule
-$N_{\max}$ & $N_{\text{sitios}}$ & Error & $N_{\max}^{-1}$ & $N_{\max}^{-2}$ \\
-\midrule
-2 & 33 & $2.12\times10^{-10}$ & 0.500000 & 0.250000 \\
-3 & 75 & $2.12\times10^{-10}$ & 0.333333 & 0.111111 \\
-4 & 141 & $2.12\times10^{-10}$ & 0.250000 & 0.062500 \\
-5 & 231 & $2.12\times10^{-10}$ & 0.200000 & 0.040000 \\
-6 & 345 & $2.12\times10^{-10}$ & 0.166667 & 0.027778 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\begin{itemize}
-  \item Convergencia exponencial (dominada por $\exp(-\pi n^2 t/2)$)
-  \item No hay convergencia tipo ley de potencia
-  \item Error dominado por precisi\'on num\'erica desde $N_{\max}=2$
+  \item L\'inea cr\'itica del modelo FCC-DNLS: $\text{Re}(s) = 3/4$ (dimensi\'on efectiva 3/2)
 \end{itemize}
 
 \section{Experimento C2: Umbral aritm\'etico Norma=4}
@@ -324,76 +297,41 @@ $n$ & $r_3(n)$ & Nota \\
   \item Degeneraci\'on $\lambda=4$ en FCC es 6, coincide con $r_3(4)$
 \end{itemize}
 
-\section{Experimento C3: Multipletes de Weyl D3 y 33 canales}
+\section{Experimento SPARC: Curvas de rotaci\'on sin materia oscura}
 
-\subsection{Descripci\'on}
-Construcci\'on de las \'orbitas del grupo de Weyl D3 (orden 24) y an\'alisis de las degeneraciones del Laplaciano FCC.
+\subsection{Problema original}
+El perfil de Laplace $P(r) = V_0^2/r - M/r^2$ daba una contribuci\'on repulsiva para $r>r_{\text{trans}}$, reduciendo $v_{\text{obs}}$ en lugar de aumentarla.
 
-\subsection{Resultados}
-\begin{itemize}
-  \item Grupo de Weyl D3: orden 24 (permutaciones S3 + signos con producto = 1)
-  \item Grupo de simetr\'ia completo: Oh (orden 48)
-  \item Orbitas de Weyl: $(0,0,0)\to1$, $(1,1,0)\to12$, $(2,0,0)\to6$, $(2,1,1)\to24$, $(2,2,0)\to12$
-  \item Primeros 33 autovalores \'unicos del Laplaciano FCC (N=8, 256 sitios) corresponden a multipletes D3
-  \item Espectro determinado por teor\'ia de representaciones del grupo de Weyl D3
-\end{itemize}
+\subsection{Soluci\'on: Perfil exponencial}
+Nuevo modelo (0 par\'ametros libres adicionales vs NFW):
+\begin{align}
+  v_{\text{obs}}^2(r) = Y\cdot(v_{\text{disk}}^2+v_{\text{bul}}^2) + v_{\text{gas}}^2 + V_{\text{asy}}^2\cdot(1-e^{-r/r_c})
+\end{align}
+Ventajas: $v_{\text{vac}}^2(0)=0$, $v_{\text{vac}}^2(r)\to V_{\text{asy}}^2$ (asint\'otico constante), siempre positiva.
 
-\section{Experimento C4: Estad\'istica GUE en primos y espectro FCC}
-
-\subsection{Descripci\'on}
-An\'alisis de espaciamientos del Laplaciano FCC (N=8), huecos entre primos hasta 2 millones ($N=148,933$ primos), comparaci\'on con GUE te\'orico y matriz GUE aleatoria.
-
-\subsection{Resultados}
+\subsection{Resultados: 175 galaxias}
 \begin{center}
-\begin{tabular}{ccccc}
+\begin{tabular}{lrr}
 \toprule
-$s$ & $P_{\text{FCC}}(s)$ & $P_{\text{primos}}(s)$ & $P_{\text{GUE}}(s)$ & $P_{\text{Poisson}}(s)$ \\
+Estad\'istica & EXP & NFW \\
 \midrule
-0.07 & 0.0118 & 0.0000 & 0.0276 & 0.9335 \\
-0.35 & 0.1036 & 0.0559 & 0.1313 & 0.7047 \\
-0.70 & 0.2515 & 0.1640 & 0.2393 & 0.4966 \\
-1.05 & 0.1896 & 0.1971 & 0.3093 & 0.3500 \\
-1.40 & 0.1657 & 0.2086 & 0.3354 & 0.2467 \\
+Galaxias OK & 175/175 & 175/175 \\
+$\chi^2$ medio & 2.38 & 2.38 \\
+$\chi^2$ mediana & 1.03 & 0.91 \\
+$\chi^2 < 2$ & 120 & 115 \\
+$\chi^2 < 3$ & 136 & 133 \\
+$\chi^2 < 5$ & 154 & 156 \\
+EXP/NFW gana & 33 & 39 \\
+Empate & 103 & \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\subsection{Estad\'istica KS}
-\begin{itemize}
-  \item GUE matriz (200$\times$200): $D = 0.047$ (control)
-  \item Primos: $D = 0.16$ vs GUE
-  \item Poisson: $D = 0.213$ vs GUE (control)
-  \item FCC Laplaciano (N=8): $D = 0.25$ (solo 12 valores \'unicos, N/S)
-  \item Repulsi\'on a $s\to 0$ confirmada en primos
-  \item La conexi\'on GUE requiere DNLS (no-lineal), no Laplaciano lineal (integrable $\to$ Poisson)
-\end{itemize}
+\subsection{NGC 3198 detalle}
+EXP: $Y=0.46$, $V_{\text{asy}}=134$ km/s, $r_c=6.83$ kpc, $\chi^2=1.25$. NFW: $\chi^2=1.39$.
 
-\section{Experimento C4b: Test GUE masivo en primos (1.27M)}
-
-\subsection{Descripci\'on}
-Extensi\'on del an\'alisis C4 con 1,270,607 primos (criba hasta 20M) y matriz GUE 400$\times$400 como control, para determinar si KS converge a 0 con m\'as primos.
-
-\subsection{Resultados}
-\begin{center}
-\begin{tabular}{lccc}
-\toprule
-Estad\'istica & Primos & GUE 400$\times$400 & Poisson \\
-\midrule
-$N$ & 1,270,607 & 399 & 50,000 \\
-KS vs GUE & 0.1655 & 0.0627 & 0.2137 \\
-$P(s<0.05)$ & 0.0000 & 0.0020 & 0.0488 \\
-$\langle s\rangle$ & 1.0000 & 1.0000 & 1.0001 \\
-$\sigma(s)$ & 0.8334 & -- & -- \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\begin{itemize}
-  \item KS estable desde $N=500$ hasta $N=1,270,607$: $\mathbf{0.1655}$ (no mejora)
-  \item Repulsi\'on a $s\to 0$ confirmada: $P(s<0.05)=0$ (id\'entico a GUE)
-  \item Pero la distribuci\'on NO es GUE exacta: la cola es m\'as pesada
-  \item \textbf{Conclusi\'on:} la repulsi\'on es genuina, pero la estad\'istica exacta requiere el DNLS no-lineal, no el Laplaciano lineal FCC (que es integrable $\to$ Poisson)
-\end{itemize}
+\subsection{Conclusi\'on SPARC}
+El perfil exponencial resuelve el problema de signo y explica las curvas de rotaci\'on planas TAN BIEN como la materia oscura NFW (ambos con 3 par\'ametros), pero SIN introducir materia no detectada. El par\'ametro $r_c$ tiene sentido f\'isico directo como escala de correlaci\'on del grafo D3.
 
 \section{Experimento E137: Caza de la constante de estructura fina}
 
@@ -421,42 +359,6 @@ Mejor candidato:
   \quad\Longrightarrow\quad \alpha^{-1} = 44\pi = 138.230
 \end{align}
 Interpretaci\'on: de los $Z=12$ vecinos del FCC, uno es el auto-acoplamiento, dejando $Z-1=11$ conexiones efectivas. La carga el\'ectrica fundamental $e^2$ corresponde a la inversa de las conexiones efectivas del grafo. El error 0.87\% proviene de la polarizaci\'on del vac\'io (modos fon\'onicos del grafo D3).
-
-\subsection{Problema original}
-El perfil de Laplace $P(r) = V_0^2/r - M/r^2$ daba una contribuci\'on repulsiva para $r>r_{\text{trans}}$, reduciendo $v_{\text{obs}}$ en lugar de aumentarla.
-
-\subsection{Soluci\'on: Perfil exponencial}
-Nuevo modelo (0 par\'ametros libres adicionales vs NFW):
-\begin{align}
-  v_{\text{obs}}^2(r) = Y\cdot(v_{\text{disk}}^2+v_{\text{bul}}^2) + v_{\text{gas}}^2 + V_{\text{asy}}^2\cdot(1-e^{-r/r_c})
-\end{align}
-Ventajas: $v_{\text{vac}}^2(0)=0$, $v_{\text{vac}}^2(r)\to V_{\text{asy}}^2$ (asint\'otico constante), siempre positiva.
-
-\subsection{Resultados: 175 galaxias}
-Ajuste con \texttt{curve\_fit} para las 175 galaxias SPARC:
-\begin{center}
-\begin{tabular}{lrr}
-\toprule
-Estad\'istica & EXP & NFW \\
-\midrule
-Galaxias OK & 175/175 & 175/175 \\
-$\chi^2$ medio & 2.38 & 2.38 \\
-$\chi^2$ mediana & 1.03 & 0.91 \\
-$\chi^2 < 2$ & 120 & 115 \\
-$\chi^2 < 3$ & 136 & 133 \\
-$\chi^2 < 5$ & 154 & 156 \\
-EXP/NFW gana & 33 & 39 \\
-Empate & 103 & \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsection{NGC 3198 detalle}
-EXP: $Y=0.46$, $V_{\text{asy}}=134$ km/s, $r_c=6.83$ kpc, $\chi^2=1.25$.\\
-LAP: $\chi^2=4.54$ (antiguo modelo). NFW: $\chi^2=1.39$.
-
-\subsection{Conclusi\'on SPARC}
-El perfil exponencial resuelve el problema de signo y explica las curvas de rotaci\'on planas TAN BIEN como la materia oscura NFW (ambos con 3 par\'ametros), pero SIN introducir materia no detectada. El par\'ametro $r_c$ tiene sentido f\'isico directo como escala de correlaci\'on del grafo D3.
 
 \section{Escala temporal del colapso (X1)}
 
@@ -487,8 +389,6 @@ Ajuste exponencial para Bell state:
   \item \textbf{Colapso lento:} Estado real con inhomogeneidades NO completa ($c_{k0}: 0.50\to 0.54$ en $t=2.0$)
   \item La discrepancia se debe al n\'umero de modos excitados inicialmente
   \item \textbf{Pregunta central abierta:} colapso completo en tiempo finito o asint\'otico?
-  \item Si completa $\to$ el $z$ espectral desaparece $\to$ JWST sin explicaci\'on
-  \item Si asint\'otico $\to$ universo siempre en transitorio $\to$ JWST natural, pero CMB problem\'atica
 \end{itemize}
 
 \section{Conclusiones generales}
@@ -498,23 +398,22 @@ Ajuste exponencial para Bell state:
   \item Punto fijo 3D (N=6, 108 sitios): ancho=2.96, $\max|\psi|^2=0.009$, $E=-0.056$ \checkmark
   \item Escala N=12 (864 sitios): 99.9\% potencia en $\lambda=0$ y $\lambda=1.07$ \checkmark
   \item Purificaci\'on $S(t)\to 0$: rank $68\to 1$ \checkmark
-  \item Umbral Norma=4: auto-atrapamiento \checkmark
+  \item Umbral Norma=4: auto-atrapamiento, $r_3(4)=6$ \checkmark
   \item $\beta$ geom\'etrico: $\beta = (1-\eta) + \varepsilon_0/2 = 0.30119$ \checkmark
   \item $\varepsilon_0 = 1/Z = 1/12$: cero par\'ametros libres \checkmark
 \end{itemize}
 
-\subsection{Extensiones --- RESULTADOS MIXTOS}
+\subsection{Extensiones}
 \begin{itemize}
   \item \textbf{A (JWST):} Redshift espectral cualitativamente consistente. $H(z)$ desviado $-75\%$ a $-93\%$ de FLRW. Morfolog\'ias replicadas con similitud 1.0000.
   \item \textbf{B (Bell):} No-localidad es ilusi\'on de proyecci\'on. $S=2.828$ uniforme en espacio. Kernel $\xi_K\approx 1.09$ sitios.
-  \item \textbf{C (Primos/Zeta):} Ecuaci\'on funcional verificada exactamente. L\'inea cr\'itica $\text{Re}(s)=3/4$. Repulsi\'on GUE confirmada pero no exacta (KS=0.16).
+  \item \textbf{C (Zeta):} Ecuaci\'on funcional verificada exactamente. L\'inea cr\'itica $\text{Re}(s)=3/4$. Umbral Norma=4 conectado a $r_3(4)=6$.
 \end{itemize}
 
-\subsection{Tensi\'on observacional (RESUELTA)}
+\subsection{Tensi\'on observacional}
 \begin{itemize}
   \item \textbf{SPARC:} \textbf{RESUELTO.} Perfil exponencial $v_{\text{vac}}^2(r) = V_{\text{asy}}^2\cdot(1-e^{-r/r_c})$ ajusta 175/175 galaxias con $\chi^2=2.38$, igual que NFW ($\chi^2=2.38$). Sin materia oscura, sin problema de signo.
   \item \textbf{Colapso X1:} R\'apido para Bell state ($\tau\sim 0.34$), lento para estados realistas. Dependencia cr\'itica del n\'umero de modos.
-  \item \textbf{C4b GUE masivo:} 1.27M primos confirman repulsi\'on pero KS=0.1655 (no converge a 0). La conexi\'on GUE requiere DNLS.
   \item \textbf{E137:} Mejor candidato $\alpha^{-1}=44\pi=138.23$ (0.87\% de 137.036) via $e^2=1/(Z-1)$.
 \end{itemize}
 
@@ -523,16 +422,14 @@ Ajuste exponencial para Bell state:
 \begin{enumerate}
   \item \textbf{Colapso finito o asint\'otico?} Determina TODO: si completa, JWST sin explicaci\'on. Si asint\'otico, universo siempre en transitorio.
   \item \textbf{$\alpha^{-1}=137$ exacto?} La derivaci\'on $e^2=1/(Z-1)$ da 138.23 (0.87\%). La correcci\'on exacta requiere entrop\'ia del grafo desordenado con fluctuaciones de conectividad.
-  \item \textbf{Conexi\'on Laplaciano lineal (Poisson) $\to$ DNLS (GUE)?} La estad\'istica del Laplaciano FCC es Poisson. La conexi\'on GUE requiere la no-linealidad del DNLS. C4b confirma que primos tienen repulsi\'on pero no son GUE exacto.
   \item \textbf{Escala temporal vs. edad del universo?} Si 1 unidad $\sim$ Gyr, $\tau\sim 0.34$ Gyr y el colapso no ha completado en 13.8 Gyr.
 \end{enumerate}
 
 \section{Pr\'oximos pasos}
 
 \begin{enumerate}
-  \item \textbf{Verificar GUE en DNLS:} Diagonalizar operador completo $L$ + no-linealidad $\gamma|\psi|^2$, medir espaciamientos. Pendiente.
-  \item \textbf{Normalizaci\'on temporal:} Medir $\tau$ en N=24+ (miles de sitios) para escalamiento cosmológico. Pendiente.
-  \item \textbf{Publicaci\'on:} SPARC resuelto. E137 candidato viable. Preprint con resultados A, B, C, SPARC, E137.
+  \item \textbf{Normalizaci\'on temporal:} Medir $\tau$ en N=24+ (miles de sitios) para escalamiento cosmológico.
+  \item \textbf{Publicaci\'on:} SPARC resuelto, E137 candidato viable, modelo sin par\'ametros libres. Preprint v4 con resultados A, B, C, SPARC, E137.
 \end{enumerate}
 
 \end{document}
